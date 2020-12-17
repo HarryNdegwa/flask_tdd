@@ -8,3 +8,8 @@ class UserTestCase(unittest.TestCase):
         self.user = User("Harrison","Ndegwa","Ndech","harryndegwa4@gmail.com")
 
 
+    def test_user_str(self):
+        self.assertEqual(str(self.user),"Ndech")
+
+
+    
