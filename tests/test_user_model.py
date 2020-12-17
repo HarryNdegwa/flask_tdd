@@ -1,10 +1,11 @@
-import unittest
-
 from models import User
+from .base import BaseCase
 
 
-class UserTestCase(unittest.TestCase):
+class UserTestCase(BaseCase):
+    
     def setUp(self):
+        super().setUp()
         self.user = User("Harrison","Ndegwa","Ndech","harryndegwa4@gmail.com")
 
 
