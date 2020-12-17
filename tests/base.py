@@ -1,12 +1,14 @@
 import unittest
 
+from flask_sqlalchemy import SQLAlchemy
+
 from main import app,database
 
 class BaseCase(unittest.TestCase):
 
     def setUp(self):
         self.app = app.test_client()
-        self.db = database
+        self.db = SQLAlchemy(database)
 
     def tearDown(self):
         # Delete Database collections after the test is complete
