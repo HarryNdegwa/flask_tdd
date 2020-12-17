@@ -1,13 +1,12 @@
 import unittest
 
-from main import app
+from main import app,database
 
 class BaseCase(unittest.TestCase):
 
     def setUp(self):
         self.app = app.test_client()
-        self.db = get_db()
-
+        self.db = database
 
     def tearDown(self):
         # Delete Database collections after the test is complete

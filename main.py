@@ -12,6 +12,7 @@ database = None
 
 if testing:
     print("Testing")
+    app.testing = True
     # database = app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql+psycopg2://postgres:harry1998@127.0.0.1:5432/test_db"
 else:
     print("Serious stuff")
