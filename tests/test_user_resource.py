@@ -12,4 +12,7 @@ class UserResourceTestCase(BaseCase):
 
 
     def test_user_creation(self):
-        pass
+        with self.app as client:
+            print(dir(client))
+            post_req = client.post("/user/create",self.user_creation_payload)
+            self.assertEqual(post_req,"User created successfully!")

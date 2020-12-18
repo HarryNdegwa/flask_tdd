@@ -13,8 +13,8 @@ class User(db.Model):
     first_name = db.Column(db.String,nullable=True)
     last_name = db.Column(db.String,nullable=True)
     email = db.Column(db.String,nullable=False)
-    created_at = db.Column(db.Datetime,nullable=False,default=datetime.utcnow)
-    updated_at = db.Column(db.Datetime,nullable=False,default=datetime.utcnow,onupdate=datetime.utcnow)
+    created_at = db.Column(db.DateTime,nullable=False,default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime,nullable=False,default=datetime.utcnow,onupdate=datetime.utcnow)
     password = db.Column(db.String,nullable=False)
 
 
