@@ -2,7 +2,7 @@ from models.user import User
 from tests.base import BaseCase
 
 
-class UserTestCase(BaseCase):
+class UserModelTestCase(BaseCase):
     
     def setUp(self):
         super().setUp()
