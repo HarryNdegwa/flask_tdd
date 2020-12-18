@@ -1,4 +1,4 @@
-from main import db
+from main import db,bcrypt
 
 class User(db.Model):
     
@@ -19,7 +19,7 @@ class User(db.Model):
         self.first_name = first_name
         self.last_name = last_name
         self.email = email
-        self.password = ""
+        self.password = bcrypt.generate_password_hash(password).decode("utf-8")
 
 
 

@@ -6,7 +6,7 @@ class UserModelTestCase(BaseCase):
     
     def setUp(self):
         super().setUp()
-        self.user = User("Ndech","Harrison","Ndegwa","harryndegwa4@gmail.com")
+        self.user = User("Ndech","Harrison","Ndegwa","harryndegwa4@gmail.com","testuser")
 
     
     def test_user_instance(self):
