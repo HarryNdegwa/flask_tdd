@@ -1,4 +1,4 @@
-from models import User
+from models.user import User
 from .base import BaseCase
 
 
@@ -6,7 +6,7 @@ class UserTestCase(BaseCase):
     
     def setUp(self):
         super().setUp()
-        self.user = User("Harrison","Ndegwa","Ndech","harryndegwa4@gmail.com")
+        self.user = User("Ndech","Harrison","Ndegwa","harryndegwa4@gmail.com")
 
 
     def test_user_str(self):
