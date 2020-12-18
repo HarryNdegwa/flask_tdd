@@ -13,8 +13,12 @@ class UserTestCase(BaseCase):
         self.assertEqual(str(self.user),"Ndech")
 
 
-    def test_user_username(self):
+    def test_user_get_username(self):
         self.assertEqual(self.user.get_username(),"Ndech")
+
+    
+    def test_user_get_email(self):
+        self.assertEqual(self.user.get_email(),"harryndegwa4@gmail.com")
 
 
     
