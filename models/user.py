@@ -13,5 +13,13 @@ class User(db.Model):
     email = db.Column(db.String,nullable=False)
 
 
+    def __init__(self,username,first_name,last_name,email):
+        self.username = username
+        self.first_name = first_name
+        self.last_name = last_name
+        self.email = email
+
+
+
     def __str__(self):
         return self.username
