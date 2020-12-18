@@ -11,6 +11,7 @@ class User(db.Model):
     first_name = db.Column(db.String,nullable=True)
     last_name = db.Column(db.String,nullable=True)
     email = db.Column(db.String,nullable=False)
+    password = db.Column(db.String,nullable=False)
 
 
     def __init__(self,username,first_name,last_name,email):
