@@ -8,6 +8,10 @@ class UserTestCase(BaseCase):
         super().setUp()
         self.user = User("Ndech","Harrison","Ndegwa","harryndegwa4@gmail.com")
 
+    
+    def test_user_instance(self):
+        self.assertIsInstance(self.user,User)
+
 
     def test_user_str(self):
         self.assertEqual(str(self.user),"Ndech")
