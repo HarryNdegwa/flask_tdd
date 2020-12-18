@@ -13,4 +13,8 @@ class UserTestCase(BaseCase):
         self.assertEqual(str(self.user),"Ndech")
 
 
+    def test_user_username(self):
+        self.assertEqual(self.user.get_username(),"Ndech")
+
+
     
