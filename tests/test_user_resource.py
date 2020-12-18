@@ -10,8 +10,13 @@ class UserResourceTestCase(BaseCase):
             "password":"testuser"
         }
 
+    def test_list_users(self):
+        with self.app as client:
+            get_req = client.get("/users/")
+            self.assertIsInstance(get_req,list)
+
 
     def test_user_creation(self):
         with self.app as client:
-            post_req = client.post("/user/create",self.user_creation_payload)
+            post_req = client.post("/users/",self.user_creation_payload)
             self.assertEqual(post_req,"User created successfully!")

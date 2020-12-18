@@ -1,6 +1,7 @@
 from flask_restful import Resource,reqparse
 
 from main import db
+from models.user import User
 
 class UserList(Resource):
 
@@ -12,8 +13,6 @@ class UserList(Resource):
         self.post_req_parser.add_argument("email",type=str,required=True,help="Email required!")
         self.post_req_parser.add_argument("password",type=str,required=True,help="Password required!")
 
-    def get(self):
-        return "",200
 
     def post(self):
         pass
