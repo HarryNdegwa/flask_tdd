@@ -23,6 +23,12 @@ class UserResourceTestCase(BaseCase):
             "password":"testuser"
         }
 
+        self.email_user_payload = {
+            "username":"test",
+            "email":"harryndegwa4@gmail.com",
+            "password":"testuser"
+        }
+
     def test_list_users(self):
         with self.app as client:
             res = client.get("/users/")
@@ -55,4 +61,16 @@ class UserResourceTestCase(BaseCase):
             res2 = client.post("/users/",json=self.username_user_payload)
             data = json.loads(res2.data)
             self.assertEqual(data,"Username already exists!")
+            self.assertEqual(res2.status_code,400)
+
+
+    def test_user_creation_with_existing_email(self):
+        with self.app as client:
+            res1 = client.post("/users/",json=self.user_creation_payload)
+            data = json.loads(res1.data)
+            self.assertEqual(data,"User created successfully!")
+            self.assertEqual(res1.status_code,201)
+            res2 = client.post("/users/",json=self.email_user_payload)
+            data = json.loads(res2.data)
+            self.assertEqual(data,"Email already exists!")
             self.assertEqual(res2.status_code,400)
