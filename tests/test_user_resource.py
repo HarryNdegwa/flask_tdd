@@ -117,4 +117,15 @@ class UserResourceTestCase(BaseCase):
             self.assertEqual(res1.status_code,201)
             res2 = client.put(f"/user/{test_id}/",json=self.update_payload)
             self.assertEqual(res2.status_code,204)
+
+
+    def test_update_invalid_user(self):
+        test_id = 100
+        with self.app as client:
+            res1 = client.post("/users/",json=self.user_creation_payload)
+            data = json.loads(res1.data)
+            self.assertEqual(data,"User created successfully!")
+            self.assertEqual(res1.status_code,201)
+            res2 = client.put(f"/user/{test_id}/",json=self.update_payload)
+            self.assertEqual(res2.status_code,404)
             
