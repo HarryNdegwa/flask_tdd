@@ -71,9 +71,12 @@ class UserList(Resource):
 
         if self.email_exists(data.get("email")):
             return "Email already exists!",400
-            
+
         user = User(username=data.get("username"),first_name=data.get("first_name"),last_name=data.get("last_name"),email=data.get("email"),password=data.get("password"))
         db.session.add(user)
         db.session.commit()
         return "User created successfully!",201
+
+
+
 

@@ -74,3 +74,15 @@ class UserResourceTestCase(BaseCase):
             data = json.loads(res2.data)
             self.assertEqual(data,"Email already exists!")
             self.assertEqual(res2.status_code,400)
+
+
+
+    def test_get_user_by_valid_id(self):
+        test_id = 1
+        with self.app as client:
+            res = client.get(f"/user/{test_id}")
+            data = json.load(res.data)
+            self.assertEqual(data.get("id"),test_id)
+            self.assertIn("username",data.keys())
+            self.assertEqual(res.status_code,200)
+
