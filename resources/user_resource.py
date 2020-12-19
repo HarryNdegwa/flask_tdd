@@ -41,6 +41,16 @@ class User(db.Model):
         return self.email
 
 
+    def update(self,instance,data):
+        user_fields = {"username","first_name","last_name","email","password"}
+        data_fields = set(data.keys())
+        in_both = list(user_fields.union(data_fields))
+
+        for field in in_both:
+            instance[field] = data.get(field)
+
+        return instance
+
 
 class UserList(Resource):
 
@@ -86,6 +96,10 @@ class UserDetails(Resource):
         "email":fields.String
     }
 
+    def __init__(self):
+        self.put_parser = reqparse.RequestParser()
+
+
 
     def abort_if_user_does_not_exist(self,id):
         user = self.get_user(id)
@@ -105,4 +119,8 @@ class UserDetails(Resource):
     def get(self,id):
         user = self.abort_if_user_does_not_exist(id)
         return user,200
+
+
+    def put(self,id):
+        user = self.abort_if_user_does_not_exist(id)
 

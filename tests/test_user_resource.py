@@ -29,6 +29,10 @@ class UserResourceTestCase(BaseCase):
             "password":"testuser"
         }
 
+        self.update_payload = {
+            "username":"test",
+        }
+
     def test_list_users(self):
         with self.app as client:
             res = client.get("/users/")
@@ -103,3 +107,15 @@ class UserResourceTestCase(BaseCase):
             self.assertEqual(data.get("message"),f"User {test_id} does not exist!")
             self.assertEqual(res2.status_code,404)
 
+
+    def test_update_valid_user(self):
+        test_id = 1
+        with self.app as client:
+            res1 = client.post("/users/",json=self.user_creation_payload)
+            data = json.loads(res1.data)
+            self.assertEqual(data,"User created successfully!")
+            self.assertEqual(res1.status_code,201)
+            res2 = client.put(f"/user/{test_id}/",json=self.update_payload)
+            data = json.loads(res2.data)
+            self.assertEqual(res2.status_code,204)
+            
