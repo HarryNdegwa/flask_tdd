@@ -159,3 +159,10 @@ class UserDetails(Resource):
         db.session.commit()
         return {},204
 
+
+    def delete(self,id):
+        user = self.abort_if_user_does_not_exist(id)
+        db.session.delete(user.first())
+        db.session.commit()
+        return {},204
+
