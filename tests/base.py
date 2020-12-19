@@ -2,7 +2,7 @@ import unittest
 
 from flask_sqlalchemy import SQLAlchemy
 
-from main import app,db
+from app import app,db
 
 class BaseCase(unittest.TestCase):
 
