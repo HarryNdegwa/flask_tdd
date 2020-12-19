@@ -15,8 +15,8 @@ class User(db.Model):
     first_name = db.Column(db.String,nullable=True)
     last_name = db.Column(db.String,nullable=True)
     email = db.Column(db.String,nullable=False)
-    created_at = db.Column(db.DateTime,nullable=False,default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime,nullable=False,default=datetime.utcnow,onupdate=datetime.utcnow)
+    created_at = db.Column(db.DateTime,default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime,default=datetime.utcnow,onupdate=datetime.utcnow)
     password = db.Column(db.String,nullable=False)
 
 
@@ -41,15 +41,23 @@ class User(db.Model):
         return self.email
 
 
-    def update(self,instance,data):
-        user_fields = {"username","first_name","last_name","email","password"}
-        data_fields = set(data.keys())
-        in_both = list(user_fields.union(data_fields))
+    def get_fields(self):
+        return ["username","first_name","last_name","email","password"]
 
-        for field in in_both:
-            instance[field] = data.get(field)
 
-        return instance
+    # def update(self,data):
+    #     user_fields = {"username","first_name","last_name","email","password"}
+    #     data_fields = set(data.keys())
+    #     in_both = list(user_fields.union(data_fields))
+
+    #     print(self.__dict__)
+
+    #     for field in in_both:
+    #         self.__dict__[field] = data.get(field)
+
+    #     print(self.__dict__)
+
+    #     return self
 
 
 class UserList(Resource):
@@ -98,18 +106,24 @@ class UserDetails(Resource):
 
     def __init__(self):
         self.put_parser = reqparse.RequestParser()
+        self.put_parser = reqparse.RequestParser(bundle_errors=True)
+        self.put_parser.add_argument("username",type=str,required=False)
+        self.put_parser.add_argument("first_name",type=str,required=False)
+        self.put_parser.add_argument("last_name",type=str,required=False)
+        self.put_parser.add_argument("email",type=str,required=False)
+        self.put_parser.add_argument("password",type=str,required=False)
 
 
 
     def abort_if_user_does_not_exist(self,id):
         user = self.get_user(id)
-        if not user:
+        if not user.first():
             return abort(404,message = f"User {id} does not exist!")
         return user
 
 
     def get_user(self,id):
-        user = User.query.filter_by(id=id).first()
+        user = User.query.filter_by(id=id)
         if user:
             return user
         return False
@@ -118,9 +132,30 @@ class UserDetails(Resource):
     @marshal_with(resource_fields)
     def get(self,id):
         user = self.abort_if_user_does_not_exist(id)
-        return user,200
+        return user.first(),200
+
+
+    def update_data(self,user,raw_data):
+        data = {}
+        user_fields = user.first().get_fields()
+        for field in user_fields:
+            if field in raw_data.keys():
+                if raw_data.get(field) == None:
+                    data[field] = user.first().__dict__.get(field)
+                else:
+                    data[field] = raw_data.get(field)
+            else:
+                data[field] = user.first().__dict__.get(field)
+        
+        return data
+
 
 
     def put(self,id):
         user = self.abort_if_user_does_not_exist(id)
+        request_data = self.put_parser.parse_args()    
+        data = self.update_data(user,request_data)
+        user.update(data)
+        db.session.commit()
+        return {},204
 
