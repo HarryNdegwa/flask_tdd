@@ -57,5 +57,9 @@ class UserList(Resource):
         return users,200
 
     def post(self):
-        return "",201
+        data = self.post_req_parser.parse_args()
+        user = User(username=data.get("username"),first_name=data.get("first_name"),last_name=data.get("last_name"),email=data.get("email"),password=data.get("password"))
+        db.session.add(user)
+        db.session.commit()
+        return "User created successfully!",201
 
