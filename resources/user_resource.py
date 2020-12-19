@@ -57,5 +57,5 @@ class UserList(Resource):
         return users,200
 
     def post(self):
-        pass
+        return "",201
 

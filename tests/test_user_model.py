@@ -5,11 +5,11 @@ class UserModelTestCase(BaseCase):
     
     def setUp(self):
         super().setUp()
-        self.user = self.user("Ndech","Harrison","Ndegwa","harryndegwa4@gmail.com","testuser")
+        self.user = self.User("Ndech","Harrison","Ndegwa","harryndegwa4@gmail.com","testuser")
 
     
     def test_user_instance(self):
-        self.assertIsInstance(self.user,User)
+        self.assertIsInstance(self.user,self.User)
 
 
     def test_user_str(self):

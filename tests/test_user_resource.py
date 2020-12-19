@@ -1,3 +1,5 @@
+import json
+
 from tests.base import BaseCase
 
 class UserResourceTestCase(BaseCase):
@@ -13,7 +15,8 @@ class UserResourceTestCase(BaseCase):
     def test_list_users(self):
         with self.app as client:
             get_req = client.get("/users/")
-            self.assertIsInstance(get_req,list)
+            data = json.loads(get_req.data.decode("utf-8"))
+            self.assertIsInstance(data,list)
 
 
     def test_user_creation(self):
