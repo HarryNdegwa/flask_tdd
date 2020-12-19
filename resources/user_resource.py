@@ -56,6 +56,10 @@ class UserList(Resource):
         user = User.query.filter_by(username=name).first()
         return user
 
+    def email_exists(self,email):
+        user = User.query.filter_by(email=email).first()
+        return user
+
     def get(self):
         users = User.query.all()
         return users,200
@@ -64,6 +68,10 @@ class UserList(Resource):
         data = self.post_req_parser.parse_args()
         if self.username_exists(data.get("username")):
             return "Username already exists!",400
+
+        if self.email_exists(data.get("email")):
+            return "Email already exists!",400
+            
         user = User(username=data.get("username"),first_name=data.get("first_name"),last_name=data.get("last_name"),email=data.get("email"),password=data.get("password"))
         db.session.add(user)
         db.session.commit()
