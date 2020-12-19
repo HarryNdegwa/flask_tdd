@@ -80,10 +80,13 @@ class UserResourceTestCase(BaseCase):
     def test_get_user_by_valid_id(self):
         test_id = 1
         with self.app as client:
-            res = client.get(f"/user/{test_id}")
-            data = json.loads(res.data)
-            print(data)
+            res1 = client.post("/users/",json=self.user_creation_payload)
+            data = json.loads(res1.data)
+            self.assertEqual(data,"User created successfully!")
+            self.assertEqual(res1.status_code,201)
+            res2 = client.get(f"/user/{test_id}/")
+            data = json.loads(res2.data)
             self.assertEqual(data.get("id"),test_id)
             self.assertIn("username",data.keys())
-            self.assertEqual(res.status_code,200)
+            self.assertEqual(res2.status_code,200)
 

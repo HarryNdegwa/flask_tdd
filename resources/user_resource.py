@@ -80,17 +80,17 @@ class UserList(Resource):
 
 class UserDetails(Resource):
 
-    def __init__(self):
-        self.resource_fields = {
-            "id":fields.Integer,
-            "username":fields.String,
-            "email":fields.String
-        }
+    resource_fields = {
+        "id":fields.Integer,
+        "username":fields.String,
+        "email":fields.String
+    }
+
 
     def abort_if_user_does_not_exist(self,id):
         user = self.get_user(id)
         if not user:
-            return abort(404,f"User {id} does not exist!")
+            return abort(404,message = f"User {id} does not exist!")
         return user
 
 
@@ -101,6 +101,7 @@ class UserDetails(Resource):
         return False
 
 
+    @marshal_with(resource_fields)
     def get(self,id):
         user = self.abort_if_user_does_not_exist(id)
         return user,200

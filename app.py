@@ -30,9 +30,10 @@ migrate = Migrate(app,db)
 
 def create_resources():
 
-    from resources.user_resource import UserList
+    from resources.user_resource import UserList,UserDetails
 
     api.add_resource(UserList,"/users/")
+    api.add_resource(UserDetails,"/user/<int:id>/")
 
 create_resources()
 
