@@ -52,12 +52,18 @@ class UserList(Resource):
         self.post_req_parser.add_argument("email",type=str,required=True,help="Email required!")
         self.post_req_parser.add_argument("password",type=str,required=True,help="Password required!")
 
+    def username_exists(self,name):
+        user = User.query.filter_by(username=name).first()
+        return user
+
     def get(self):
         users = User.query.all()
         return users,200
 
     def post(self):
         data = self.post_req_parser.parse_args()
+        if self.username_exists(data.get("username")):
+            return "Username already exists!",400
         user = User(username=data.get("username"),first_name=data.get("first_name"),last_name=data.get("last_name"),email=data.get("email"),password=data.get("password"))
         db.session.add(user)
         db.session.commit()
