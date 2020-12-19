@@ -36,5 +36,5 @@ class UserResourceTestCase(BaseCase):
         with self.app as client:
             post_req = client.post("/users/",json=self.invalid_user_creation_payload)
             data = json.loads(post_req.data)
-            self.assertEqual(data,"Username required!")
-            self.assertEqual(post_req.status_code,404)
+            self.assertIn("message",data.keys())
+            self.assertEqual(post_req.status_code,400)
