@@ -12,6 +12,12 @@ class UserResourceTestCase(BaseCase):
             "password":"testuser"
         }
 
+        self.invalid_user_creation_payload = {
+            "username":"CodeYouEmpire",
+            "email":"harryndegwa4@gmail.com",
+            "password":"testuser"
+        }
+
     def test_list_users(self):
         with self.app as client:
             get_req = client.get("/users/")
@@ -24,3 +30,12 @@ class UserResourceTestCase(BaseCase):
             post_req = client.post("/users/",json=self.user_creation_payload)
             data = json.loads(post_req.data)
             self.assertEqual(data,"User created successfully!")
+            self.assertEqual(post_req.status_code,201)
+
+
+    def test_user_creation_with_invalid_payload(self):
+        with self.app as client:
+            post_req = client.post("/users/",json=self.invalid_user_creation_payload)
+            data = json.loads(post_req.data)
+            self.assertEqual(data,"Invalid data!")
+            self.assertEqual(post_req.status_code,404)
