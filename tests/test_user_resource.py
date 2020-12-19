@@ -90,3 +90,16 @@ class UserResourceTestCase(BaseCase):
             self.assertIn("username",data.keys())
             self.assertEqual(res2.status_code,200)
 
+
+    def test_get_user_by_invalid_id(self):
+        test_id = 100
+        with self.app as client:
+            res1 = client.post("/users/",json=self.user_creation_payload)
+            data = json.loads(res1.data)
+            self.assertEqual(data,"User created successfully!")
+            self.assertEqual(res1.status_code,201)
+            res2 = client.get(f"/user/{test_id}/")
+            data = json.loads(res2.data)
+            self.assertEqual(data.get("message"),f"User {test_id} does not exist!")
+            self.assertEqual(res2.status_code,404)
+
