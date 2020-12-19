@@ -58,6 +58,7 @@ class UserList(Resource):
 
     def post(self):
         data = self.post_req_parser.parse_args()
+        print(data)
         user = User(username=data.get("username"),first_name=data.get("first_name"),last_name=data.get("last_name"),email=data.get("email"),password=data.get("password"))
         db.session.add(user)
         db.session.commit()
