@@ -17,24 +17,42 @@ class UserResourceTestCase(BaseCase):
             "password":"testuser"
         }
 
+        self.username_user_payload = {
+            "username":"CodeYouEmpire",
+            "email":"harryndegwa4@gmail.com",
+            "password":"testuser"
+        }
+
     def test_list_users(self):
         with self.app as client:
-            get_req = client.get("/users/")
-            data = json.loads(get_req.data.decode("utf-8"))
+            res = client.get("/users/")
+            data = json.loads(res.data.decode("utf-8"))
             self.assertIsInstance(data,list)
 
 
     def test_user_creation(self):
         with self.app as client:
-            post_req = client.post("/users/",json=self.user_creation_payload)
-            data = json.loads(post_req.data)
+            res = client.post("/users/",json=self.user_creation_payload)
+            data = json.loads(res.data)
             self.assertEqual(data,"User created successfully!")
-            self.assertEqual(post_req.status_code,201)
+            self.assertEqual(res.status_code,201)
 
 
     def test_user_creation_with_invalid_payload(self):
         with self.app as client:
-            post_req = client.post("/users/",json=self.invalid_user_creation_payload)
-            data = json.loads(post_req.data)
+            res = client.post("/users/",json=self.invalid_user_creation_payload)
+            data = json.loads(res.data)
             self.assertIn("message",data.keys())
-            self.assertEqual(post_req.status_code,400)
+            self.assertEqual(res.status_code,400)
+
+
+    def test_user_creation_with_existing_username(self):
+        with self.app as client:
+            res1 = client.post("/users/",json=self.user_creation_payload)
+            data = json.loads(res1.data)
+            self.assertEqual(data,"User created successfully!")
+            self.assertEqual(res1.status_code,201)
+            res2 = client.post("/users/",json=self.username_user_payload)
+            data = json.loads(res2.data)
+            self.assertEqual(data,"Username already exists!")
+            self.assertEqual(res2.status_code,400)
