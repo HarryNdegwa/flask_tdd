@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from flask_restful import Resource,reqparse
+from flask_restful import Resource,reqparse,fields,marshal_with,abort
 
 from app import db,bcrypt
 
@@ -78,5 +78,30 @@ class UserList(Resource):
         return "User created successfully!",201
 
 
+class UserDetails(Resource):
 
+    def __init__(self):
+        self.resource_fields = {
+            "id":fields.Integer,
+            "username":fields.String,
+            "email":fields.String
+        }
+
+    def abort_if_user_does_not_exist(self,id):
+        user = self.get_user(id)
+        if not user:
+            return abort(404,f"User {id} does not exist!")
+        return user
+
+
+    def get_user(self,id):
+        user = User.query.filter_by(id=id).first()
+        if user:
+            return user
+        return False
+
+
+    def get(self,id):
+        user = self.abort_if_user_does_not_exist(id)
+        return user,200
 

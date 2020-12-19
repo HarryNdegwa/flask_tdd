@@ -81,7 +81,8 @@ class UserResourceTestCase(BaseCase):
         test_id = 1
         with self.app as client:
             res = client.get(f"/user/{test_id}")
-            data = json.load(res.data)
+            data = json.loads(res.data)
+            print(data)
             self.assertEqual(data.get("id"),test_id)
             self.assertIn("username",data.keys())
             self.assertEqual(res.status_code,200)
