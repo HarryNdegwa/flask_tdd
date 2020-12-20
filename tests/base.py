@@ -6,6 +6,7 @@ from app import app,db
 from resources.user_resource import User
 from resources.post_resource import Post
 from resources.comment_resource import Comment
+from resources.reply_resource import Reply
 
 class BaseCase(unittest.TestCase):
         
@@ -18,6 +19,7 @@ class BaseCase(unittest.TestCase):
         self.User = User
         self.Post = Post
         self.Comment = Comment
+        self.Reply = Reply
         
     def tearDown(self):
         self.db.drop_all()
