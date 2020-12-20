@@ -1,5 +1,7 @@
 from datetime import datetime
 
+from flask_restful import Resource,reqparse,fields,marshal_with
+
 from app import db
 
 
@@ -20,3 +22,23 @@ class Post(db.Model):
 
     def __str__(self):
         return self.content
+
+
+
+class PostList(Resource):
+
+    resource_fields = {
+        "id":fields.Integer,
+        "content":fields.String
+    }
+
+
+    def __init__(self):
+        self.post_parser = reqparse.RequestParser()
+        self.post_parser.add_argument("content",type=str,required=True,help="Post content required!")
+
+
+    @marshal_with(resource_fields)
+    def post(self):
+        req_data = self.post_parser.parse_args()
+        post = Post(content=req_data.get("content"))
