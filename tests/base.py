@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 from app import app,db
 from resources.user_resource import User
+from resources.post_resource import Post
 
 class BaseCase(unittest.TestCase):
         
@@ -14,6 +15,7 @@ class BaseCase(unittest.TestCase):
         self.db = db
         self.db.create_all()
         self.User = User
+        self.Post = Post
         
     def tearDown(self):
         self.db.drop_all()
