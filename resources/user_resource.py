@@ -45,20 +45,6 @@ class User(db.Model):
         return ["username","first_name","last_name","email","password"]
 
 
-    # def update(self,data):
-    #     user_fields = {"username","first_name","last_name","email","password"}
-    #     data_fields = set(data.keys())
-    #     in_both = list(user_fields.union(data_fields))
-
-    #     print(self.__dict__)
-
-    #     for field in in_both:
-    #         self.__dict__[field] = data.get(field)
-
-    #     print(self.__dict__)
-
-    #     return self
-
 
 class UserList(Resource):
 
