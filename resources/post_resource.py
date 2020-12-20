@@ -48,8 +48,8 @@ class PostList(Resource):
     @marshal_with(resource_fields)
     def post(self):
         req_data = self.post_parser.parse_args()
-        post = Post(1,content=req_data.get("content"))
+        post = Post(2,content=req_data.get("content"))
         db.session.add(post)
         db.session.commit()
-        post = Post.query.filter_by(id=1).first()
+        post = Post.query.filter_by(id=2).first()
         return post,201
