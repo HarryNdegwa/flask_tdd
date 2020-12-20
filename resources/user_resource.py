@@ -20,6 +20,7 @@ class User(db.Model):
     password = db.Column(db.String,nullable=False)
     posts = db.relationship("Post",backref="user")
     comments = db.relationship("Comment",backref="owner")
+    replies = db.relationship("Reply",backref="owner")
 
 
     def __init__(self,username,first_name,last_name,email,password):

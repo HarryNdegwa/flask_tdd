@@ -10,6 +10,7 @@ class Comment(db.Model):
     post_id = db.Column(db.Integer,db.ForeignKey("posts.id"))
     owner_id = db.Column(db.Integer,db.ForeignKey("users.id"))
     content = db.Column(db.String)
+    replies = db.relationship("Reply",backref="comment")
     created_at = db.Column(db.DateTime,default=datetime.utcnow)
 
 
