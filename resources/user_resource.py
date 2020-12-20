@@ -19,6 +19,7 @@ class User(db.Model):
     updated_at = db.Column(db.DateTime,default=datetime.utcnow,onupdate=datetime.utcnow)
     password = db.Column(db.String,nullable=False)
     posts = db.relationship("Post",backref="user")
+    comments = db.relationship("Comment",backref="owner")
 
 
     def __init__(self,username,first_name,last_name,email,password):

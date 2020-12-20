@@ -10,6 +10,7 @@ class Post(db.Model):
     id = db.Column(db.Integer,primary_key=True)
     owner_id = db.Column(db.Integer,db.ForeignKey("users.id"))
     content = db.Column(db.String,nullable=False)
+    comments = db.relationship("Comment",backref="post")
     created_at = db.Column(db.DateTime,default=datetime.utcnow)
 
 
