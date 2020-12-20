@@ -42,13 +42,14 @@ class PostList(Resource):
 
     def __init__(self):
         self.post_parser = reqparse.RequestParser()
+        self.post_parser.add_argument("owner_id",type=int)
         self.post_parser.add_argument("content",type=str,required=True,help="Post content required!")
 
 
     @marshal_with(resource_fields)
     def post(self):
         req_data = self.post_parser.parse_args()
-        post = Post(2,content=req_data.get("content"))
+        post = Post(owner_id=req_data.get("owner_id"),content=req_data.get("content"))
         db.session.add(post)
         db.session.commit()
         post = Post.query.filter_by(id=2).first()
