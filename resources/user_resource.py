@@ -18,6 +18,7 @@ class User(db.Model):
     created_at = db.Column(db.DateTime,default=datetime.utcnow)
     updated_at = db.Column(db.DateTime,default=datetime.utcnow,onupdate=datetime.utcnow)
     password = db.Column(db.String,nullable=False)
+    posts = db.relationship("Post",backref="user")
 
 
     def __init__(self,username,first_name,last_name,email,password):
