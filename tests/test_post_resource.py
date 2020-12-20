@@ -11,6 +11,14 @@ class PostResourceTestCase(BaseCase):
             "email":"harryndegwa4@gmail.com",
             "password":"testuser"
         }
+
+    def test_get_user_posts(self):
+        with self.app as client:
+            res = client.get("/posts/")
+            data = json.loads(res.data)
+            self.assertIsInstance(data,list)
+            self.assertEqual(res.status_code,200)
+
         
 
     def test_post_creation(self):
