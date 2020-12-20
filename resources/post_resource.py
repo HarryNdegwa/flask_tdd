@@ -45,6 +45,10 @@ class PostList(Resource):
         self.post_parser.add_argument("owner_id",type=int)
         self.post_parser.add_argument("content",type=str,required=True,help="Post content required!")
 
+    @marshal_with(resource_fields)
+    def get(self):
+        return Post.query.all(),200
+
 
     @marshal_with(resource_fields)
     def post(self):
