@@ -4,6 +4,10 @@ from flask_restful import Resource,reqparse,fields,marshal_with,abort
 
 from app import db,bcrypt
 
+from resources.post_resource import Post
+from resources.comment_resource import Comment
+from resources.reply_resource import Reply
+
 
 class User(db.Model):
     
