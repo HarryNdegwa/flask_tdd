@@ -16,15 +16,19 @@ class Post(db.Model):
     created_at = db.Column(db.DateTime,default=datetime.utcnow)
 
 
-    def __init__(self,content):
+    def __init__(self,owner_id,content):
+        self.owner_id = owner_id
         self.content = content
     
 
     def __str__(self):
         return self.content
 
-    
-    def get_type
+
+    def get_owner_id(self):
+        return self.owner_id
+
+
 
 
 
