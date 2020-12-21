@@ -197,13 +197,12 @@ class UserLogin(Resource):
         req_data = self.post_parser.parse_args()
         user = User.query.filter_by(email = req_data.get("email")).first()
         if not user:
-            return "User with email not found!",404
+            return "Wrong email or password!",404
 
         try:
             token = user.encode_user_token(user.id,config.get("TOKEN_EXPIRES"),config.get("JWT_SECRET"))
             return {"token":token.decode()},200
         except Exception as e:
-            print(e)
             return "",404
 
 
