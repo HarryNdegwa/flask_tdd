@@ -38,7 +38,7 @@ class UserModelTestCase(BaseCase):
         token = self.user.encode_user_token(user_id,self.token_expires,self.jwt_secret).decode()
         token_sections = token.split(".")
         self.assertEqual(len(token_sections),3)
-        decoded_token = self.user.decode_user_token(token,self.jwt_secret)
+        decoded_token = self.User.decode_user_token(token,self.jwt_secret)
         self.assertIn("sub",decoded_token.keys())
         self.assertEqual(decoded_token.get("sub"),user_id)
 
@@ -49,7 +49,7 @@ class UserModelTestCase(BaseCase):
         token_sections = token.split(".")
         self.assertEqual(len(token_sections),3)
         unknown_jwt_secret = "\xd1\xd7\xee_\xab\xd0UB:\x18\x1bh8\xc8\x90\x0eb+"
-        decoded_token = self.user.decode_user_token(token,unknown_jwt_secret)
+        decoded_token = self.User.decode_user_token(token,unknown_jwt_secret)
         self.assertIsInstance(decoded_token,str)
         self.assertEqual(decoded_token,"Invalid token. Please login again!")
         
@@ -61,7 +61,7 @@ class UserModelTestCase(BaseCase):
         token_sections = token.split(".")
         self.assertEqual(len(token_sections),3)
         time.sleep(10)
-        decoded_token = self.user.decode_user_token(token,self.jwt_secret)
+        decoded_token = self.User.decode_user_token(token,self.jwt_secret)
         self.assertIsInstance(decoded_token,str)
         self.assertEqual(decoded_token,"Token expired. Please login again!")
 
