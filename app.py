@@ -5,6 +5,7 @@ from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_migrate import Migrate
+from flask_marshmallow import Marshmallow
 
 from config import *
 
@@ -26,6 +27,8 @@ elif app_env == "production":
 config = app.config
 
 db = SQLAlchemy(app)
+
+ma = Marshmallow(app)
 
 bcrypt = Bcrypt(app)
 

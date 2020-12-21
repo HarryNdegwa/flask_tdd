@@ -2,9 +2,9 @@ import jwt
 from datetime import datetime
 from functools import wraps
 
-from flask_restful import Resource,reqparse,fields,marshal_with,abort
+from flask_restful import Resource,reqparse,fields,marshal_with,abort,request
 
-from app import db,bcrypt,config
+from app import db,bcrypt,config,ma
 
 from resources.post_resource import Post
 from resources.comment_resource import Comment
@@ -87,18 +87,26 @@ class User(db.Model):
         except Exception as e:
             return False
 
+class UserSchema(ma.Schema):
+
+    class Meta:
+        model = User
+        fields = ["id","username","email"]
+
+
+user_schema = UserSchema()
+users_schema = UserSchema(many=True)
+
 
 
 def is_authenticated(request):
     auth_header = request.headers.get("Authorization")
     if auth_header:
         _,token = auth_header.split(" ")
-        token_payload = User.decode_user_token(token)
+        token_payload = User.decode_user_token(token,config.get("JWT_SECRET"))
         try:
             subject = token_payload["sub"]
-            if subject == user.id:
-                return True
-            return False
+            return True
         except Exception as e:
             return False
     else:
@@ -130,10 +138,11 @@ class UserList(Resource):
         user = User.query.filter_by(email=email).first()
         return user
 
-    @marshal_with(resource_fields)
     def get(self):
-        users = User.query.all()
-        return users,200
+        if is_authenticated(request):
+            users = User.query.all()
+            return users_schema.dump(users),200
+        return "",401
 
     def post(self):
         data = self.post_req_parser.parse_args()
