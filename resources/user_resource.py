@@ -66,6 +66,17 @@ class User(db.Model):
             print(e)
 
 
+    @staticmethod
+    def decode_user_token(token,secret):
+        try:
+            payload = jwt.decode(token,secret,algorithms=["HS256"])
+            return payload
+        except jwt.ExpiredSignatureError:
+            return "Token expired. Please login again!"
+        except  jwt.InvalidSignatureError:
+            return "Invalid token. Please login again!" 
+
+
 
 class UserList(Resource):
 
