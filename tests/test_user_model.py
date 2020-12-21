@@ -26,10 +26,25 @@ class UserModelTestCase(BaseCase):
 
     def test_encode_user_token(self):
         user_id = 1
-        token = self.encode_user_token(user_id).decode()
+        token_validity = 120 # seconds
+        token = self.encode_user_token(user_id,token_validity,self.jwt_secret).decode()
         token_sections = token.split(".")
         self.assertEqual(len(token_sections),3)
-        
+
+
+    def test_decode_valid_user_token(self):
+        user_id = 1
+        token_validity = 120 # seconds
+        token = self.encode_user_token(user_id,token_validity,self.jwt_secret).decode()
+        token_sections = token.split(".")
+        self.assertEqual(len(token_sections),3)
+        decoded_token = self.decode_user_token(token,self.jwt_secret)
+        self.assertIn("sub",decoded_token.keys())
+        self.assertEqual(decoded_token.get("sub"),user_id)
+
+
+
+
 
 
 
