@@ -1,8 +1,9 @@
+import jwt
 from datetime import datetime
 
 from flask_restful import Resource,reqparse,fields,marshal_with,abort
 
-from app import db,bcrypt
+from app import db,bcrypt,config
 
 from resources.post_resource import Post
 from resources.comment_resource import Comment
@@ -50,6 +51,19 @@ class User(db.Model):
 
     def get_fields(self):
         return ["username","first_name","last_name","email","password"]
+
+
+    def encode_user_token(self,id,expires,secret):
+        import datetime
+        try:
+            payload = {
+                "iat":datetime.datetime.utcnow(),
+                "exp":datetime.datetime.utcnow()+datetime.timedelta(days=0,seconds=expires),
+                "sub":int(id)
+            }
+            return jwt.encode(payload,secret,algorithm="HS256")
+        except Exception as e:
+            print(e)
 
 
 

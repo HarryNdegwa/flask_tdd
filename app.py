@@ -23,6 +23,7 @@ elif app_env == "development":
 elif app_env == "production":
     app.config.from_object(ProductionConfig())
 
+config = app.config
 
 db = SQLAlchemy(app)
 
