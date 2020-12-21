@@ -1,5 +1,6 @@
 import jwt
 from datetime import datetime
+from functools import wraps
 
 from flask_restful import Resource,reqparse,fields,marshal_with,abort
 
@@ -8,6 +9,7 @@ from app import db,bcrypt,config
 from resources.post_resource import Post
 from resources.comment_resource import Comment
 from resources.reply_resource import Reply
+
 
 
 class User(db.Model):
@@ -77,6 +79,38 @@ class User(db.Model):
             return "Invalid token. Please login again!" 
 
 
+# class TokenAuthentication(object):
+
+#     @staticmethod
+#     def authenticate_credentials(user,token):
+#         token_payload = User.decode_user_token(token)
+#         if type(token_payload) == str:
+#             return False
+#         try:
+#             if int(token_payload.get("sub")) == user.id:
+#                 return True
+#             return False
+#         except Exception as e:
+#             return False
+
+
+
+
+
+
+# class Auth(object):
+
+#     @staticmethod
+#     def authenticate(func):
+#         @wraps(func)
+#         def wrapper(*args,**kwargs):
+#             print(func.__name__)
+#             print(args)
+#             print(kwargs)
+#             return 
+#         return wrapper
+
+
 
 class UserList(Resource):
 
@@ -115,6 +149,8 @@ class UserList(Resource):
 
 
 class UserDetails(Resource):
+
+    # method_decorators = [Auth.authenticate]
 
     resource_fields = {
         "id":fields.Integer,
