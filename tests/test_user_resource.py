@@ -52,10 +52,19 @@ class UserResourceTestCase(BaseCase):
         return data.get("token")
 
 
+    def test_validate_token(self,token):
+        from resources.user_resource import User
+        is_valid = User.validate_token(token)
+        self.assertIsInstance(is_valid,bool)
+
+
+
 
     def test_list_users(self):
         with self.app as client:
-            res = client.get("/users/")
+            self.create_test_user(client)
+            token = self.login_user(client)
+            res = client.get("/users/",headers={"Authorization":f"Bearer {token}"})
             data = json.loads(res.data.decode("utf-8"))
             self.assertIsInstance(data,list)
 
