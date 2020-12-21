@@ -64,9 +64,20 @@ class UserResourceTestCase(BaseCase):
             self.create_test_user(client)
             token = self.login_user(client)
             token_valid = self.token_valid(token)
-            res = client.get("/users/")
+            res = client.get("/users/",headers={"Authorization":f"Bearer {token}"})
             data = json.loads(res.data.decode("utf-8"))
             self.assertIsInstance(data,list)
+
+
+    def test_list_users_with_invalid_token(self):
+        with self.app as client:
+            self.create_test_user(client)
+            token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2MDg1Nzk3MDIsImV4cCI6MTYwODU4MDAwMiwic3ViIjoxfQ.Xb8ak1mNwFjzVzr4_4DTVocLi4JN1oIhZLpVOY2VMxE"
+            token_valid = self.token_valid(token)
+            res = client.get("/users/",headers={"Authorization":f"Bearer {token}"})
+            data = json.loads(res.data.decode("utf-8"))
+            self.assertIsInstance(data,str)
+
 
 
     def test_user_creation(self):
