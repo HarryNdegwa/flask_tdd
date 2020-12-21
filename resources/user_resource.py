@@ -184,3 +184,28 @@ class UserDetails(Resource):
         db.session.commit()
         return {},204
 
+
+
+class UserLogin(Resource):
+
+    def __init__(self):
+        self.post_parser = reqparse.RequestParser()
+        self.post_parser.add_argument("email",type=str,required=True,help="Email is required!")
+        self.post_parser.add_argument("password",type=str,required=True,help="Password is required!")
+
+    def post(self):
+        req_data = self.post_parser.parse_args()
+        user = User.query.filter_by(email = req_data.get("email")).first()
+        if not user:
+            return "User with email not found!",404
+
+        try:
+            token = user.encode_user_token(user.id,config.get("TOKEN_EXPIRES"),config.get("JWT_SECRET"))
+            return {"token":token.decode()},200
+        except Exception as e:
+            print(e)
+            return "",404
+
+
+
+
