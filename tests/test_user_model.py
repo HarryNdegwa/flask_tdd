@@ -43,6 +43,18 @@ class UserModelTestCase(BaseCase):
         self.assertEqual(decoded_token.get("sub"),user_id)
 
 
+    def test_decode_invalid_signature_user_token(self):
+        user_id = 1
+        token_validity = 120 # seconds
+        token = self.encode_user_token(user_id,token_validity,self.jwt_secret).decode()
+        token_sections = token.split(".")
+        self.assertEqual(len(token_sections),3)
+        unknown_jwt_secret = "\xd1\xd7\xee_\xab\xd0UB:\x18\x1bh8\xc8\x90\x0eb+\"
+        decoded_token = self.decode_user_token(token,unknown_jwt_secret)
+        self.assertIsInstance(decoded_token,str)
+        self.assertEqual(decoded_token,"Invalid token. Please login again")
+        
+
 
 
 
