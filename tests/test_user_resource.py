@@ -169,4 +169,21 @@ class UserResourceTestCase(BaseCase):
             self.assertIn("token",data.keys())
             self.assertEqual(res2.status_code,200)
 
+
+    def test_user_login_with_invalid_credentials(self):
+        with self.app as client:
+            res1 = client.post("/users/",json=self.user_creation_payload)
+            data = json.loads(res1.data)
+            self.assertEqual(data,"User created successfully!")
+            self.assertEqual(res1.status_code,201) 
+            login_payload = {
+                "email":"harryndegwa@gmail.com",
+                "password":"testuser"
+            }
+            res2 = client.post("/login/",json=login_payload)
+            data = json.loads(res2.data)
+            self.assertIsInstance(data,str)
+            self.assertEqual(data,"Wrong email or password!")
+            self.assertEqual(res2.status_code,404)
+
             
