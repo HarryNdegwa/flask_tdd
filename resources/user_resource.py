@@ -89,36 +89,20 @@ class User(db.Model):
 
 
 
-# class TokenAuthentication(object):
-
-#     @staticmethod
-#     def authenticate_credentials(user,token):
-#         token_payload = User.decode_user_token(token)
-#         if type(token_payload) == str:
-#             return False
-#         try:
-#             if int(token_payload.get("sub")) == user.id:
-#                 return True
-#             return False
-#         except Exception as e:
-#             return False
-
-
-
-
-
-
-# class Auth(object):
-
-#     @staticmethod
-#     def authenticate(func):
-#         @wraps(func)
-#         def wrapper(*args,**kwargs):
-#             print(func.__name__)
-#             print(args)
-#             print(kwargs)
-#             return 
-#         return wrapper
+def is_authenticated(request):
+    auth_header = request.headers.get("Authorization")
+    if auth_header:
+        _,token = auth_header.split(" ")
+        token_payload = User.decode_user_token(token)
+        try:
+            subject = token_payload["sub"]
+            if subject == user.id:
+                return True
+            return False
+        except Exception as e:
+            return False
+    else:
+        return False
 
 
 
