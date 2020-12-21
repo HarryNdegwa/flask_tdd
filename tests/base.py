@@ -20,7 +20,8 @@ class BaseCase(unittest.TestCase):
         self.Post = Post
         self.Comment = Comment
         self.Reply = Reply
-        self.jwt_secret = "\xd1\xd7\xee_\xab\xd0UB:\x18\x1bh8\xc8\x90\x0eb+\xc67R\xec^\x90"
+        self.jwt_secret = app.config["JWT_SECRET"]
+
         
     def tearDown(self):
         self.db.drop_all()
