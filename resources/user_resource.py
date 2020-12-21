@@ -79,6 +79,16 @@ class User(db.Model):
             return "Invalid token. Please login again!" 
 
 
+    @staticmethod
+    def validate_token(token,secret):
+        try:
+            payload = jwt.decode(token,secret,algorithms=["HS256"])
+            return True
+        except Exception as e:
+            return False
+
+
+
 # class TokenAuthentication(object):
 
 #     @staticmethod
@@ -114,6 +124,12 @@ class User(db.Model):
 
 class UserList(Resource):
 
+    resource_fields = {
+        "id":fields.Integer,
+        "username":fields.String,
+        "email":fields.String
+    }
+
     def __init__(self):
         self.post_req_parser = reqparse.RequestParser(bundle_errors=True)
         self.post_req_parser.add_argument("username",type=str,required=True,help="Username required!")
@@ -130,6 +146,7 @@ class UserList(Resource):
         user = User.query.filter_by(email=email).first()
         return user
 
+    @marshal_with(resource_fields)
     def get(self):
         users = User.query.all()
         return users,200
