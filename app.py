@@ -33,7 +33,7 @@ api = Api(app)
 migrate = Migrate(app,db)
 
 
-def create_resources():
+def create_endpoints():
 
     from resources.user_resource import UserList,UserDetails
     from resources.post_resource import PostList
@@ -42,7 +42,7 @@ def create_resources():
     api.add_resource(UserDetails,"/user/<int:id>/")
     api.add_resource(PostList,"/posts/")
 
-create_resources()
+create_endpoints()
 
 
 
