@@ -24,4 +24,16 @@ class UserModelTestCase(BaseCase):
         self.assertEqual(self.user.get_email(),"harryndegwa4@gmail.com")
 
 
+    def test_encode_user_token(self):
+        user_id = 1
+        token = self.encode_user_token(user_id).decode()
+        token_sections = token.split(".")
+        self.assertEqual(len(token_sections),3)
+        
+
+
+
+        
+
+
     
