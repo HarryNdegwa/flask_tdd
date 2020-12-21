@@ -33,6 +33,8 @@ class UserResourceTestCase(BaseCase):
             "username":"test",
         }
 
+
+
     def test_list_users(self):
         with self.app as client:
             res = client.get("/users/")
@@ -150,4 +152,21 @@ class UserResourceTestCase(BaseCase):
             self.assertEqual(res1.status_code,201)
             res2 = client.delete(f"/user/{test_id}/")
             self.assertEqual(res2.status_code,404)
+
+
+    def test_user_login_with_valid_credentials(self):
+        with self.app as client:
+            res1 = client.post("/users/",json=self.user_creation_payload)
+            data = json.loads(res1.data)
+            self.assertEqual(data,"User created successfully!")
+            self.assertEqual(res1.status_code,201) 
+            login_payload = {
+                "email":"harryndegwa4@gmail.com",
+                "password":"testuser"
+            }
+            res2 = client.post("/login/",json=login_payload)
+            data = json.loads(res2.data)
+            self.assertIn("token",data.keys())
+            self.assertEqual(res2.status_code,200)
+
             
