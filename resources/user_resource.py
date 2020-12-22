@@ -3,9 +3,9 @@ from datetime import datetime
 from functools import wraps
 
 from flask_restful import Resource,reqparse,abort,request
+from sqlalchemy.types import ARRAY
 
 from app import db,bcrypt,config,ma
-
 from resources.post_resource import Post
 from resources.comment_resource import Comment
 from resources.reply_resource import Reply
@@ -28,6 +28,8 @@ class User(db.Model):
     posts = db.relationship("Post",backref="user")
     comments = db.relationship("Comment",backref="owner")
     replies = db.relationship("Reply",backref="owner")
+    followers = db.Column(ARRAY(db.Integer),nullable=True)
+    following = db.Column(ARRAY(db.Integer),nullable=True)
 
 
     def __init__(self,username,first_name,last_name,email,password):
@@ -49,6 +51,14 @@ class User(db.Model):
 
     def get_email(self):
         return self.email
+
+    
+    def get_followers(self):
+        return self.followers
+
+
+    def get_following(self):
+        return self.following
 
 
     def get_fields(self):

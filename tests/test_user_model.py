@@ -26,14 +26,6 @@ class UserModelTestCase(BaseCase):
         self.assertEqual(self.user.get_email(),"harryndegwa4@gmail.com")
 
 
-    def test_user_get_followers_type(self):
-        self.assertIsInstance(self.user.get_followers(),list)
-
-
-    def test_user_get_following_type(self):
-        self.assertIsInstance(self.user.get_following(),list)
-
-
     def test_encode_user_token(self):
         user_id = 1
         token = self.user.encode_user_token(user_id,self.token_expires,self.jwt_secret).decode()
