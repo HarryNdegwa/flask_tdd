@@ -116,11 +116,6 @@ def is_authenticated(request):
 
 class UserList(Resource):
 
-    resource_fields = {
-        "id":fields.Integer,
-        "username":fields.String,
-        "email":fields.String
-    }
 
     def __init__(self):
         self.post_req_parser = reqparse.RequestParser(bundle_errors=True)
@@ -159,8 +154,6 @@ class UserList(Resource):
 
 
 class UserDetails(Resource):
-
-    # method_decorators = [Auth.authenticate]
 
     resource_fields = {
         "id":fields.Integer,
