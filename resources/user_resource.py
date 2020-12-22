@@ -2,7 +2,7 @@ import jwt
 from datetime import datetime
 from functools import wraps
 
-from flask_restful import Resource,reqparse,fields,marshal_with,abort,request
+from flask_restful import Resource,reqparse,abort,request
 
 from app import db,bcrypt,config,ma
 
@@ -155,11 +155,6 @@ class UserList(Resource):
 
 class UserDetails(Resource):
 
-    resource_fields = {
-        "id":fields.Integer,
-        "username":fields.String,
-        "email":fields.String
-    }
 
     def __init__(self):
         self.put_parser = reqparse.RequestParser()
@@ -186,10 +181,9 @@ class UserDetails(Resource):
         return False
 
 
-    @marshal_with(resource_fields)
     def get(self,id):
         user = self.abort_if_user_does_not_exist(id)
-        return user.first(),200
+        return user_schema.dump(user.first()),200
 
 
     def update_data(self,user,raw_data):
