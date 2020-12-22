@@ -97,12 +97,13 @@ class User(db.Model):
         except Exception as e:
             return False
 
+
+
 class UserSchema(ma.Schema):
 
     class Meta:
         model = User
         fields = ["id","username","email"]
-
 
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
@@ -176,7 +177,6 @@ class UserDetails(Resource):
         self.put_parser.add_argument("password",type=str,required=False)
 
 
-
     def abort_if_user_does_not_exist(self,id):
         user = self.get_user(id)
         if not user.first():
@@ -209,7 +209,6 @@ class UserDetails(Resource):
                 data[field] = user.first().__dict__.get(field)
         
         return data
-
 
 
     def put(self,id):
