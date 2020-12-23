@@ -6,9 +6,19 @@ class UserResourceTestCase(BaseCase):
 
     def setUp(self):
         super().setUp()
-        self.user_creation_payload = {
+        self.user1_creation_payload = {
             "username":"CodeYouEmpire",
             "email":"harryndegwa4@gmail.com",
+            "password":"testuser"
+        }
+        self.user2_creation_payload = {
+            "username":"Pixenweb",
+            "email":"contact@pixenweb.com",
+            "password":"testuser"
+        }
+        self.user3_creation_payload = {
+            "username":"CoreyMS",
+            "email":"coreyms@gmail.com",
             "password":"testuser"
         }
 
@@ -33,8 +43,8 @@ class UserResourceTestCase(BaseCase):
             "username":"test",
         }
 
-    def create_test_user(self,client):
-        res = client.post("/users/",json=self.user_creation_payload)
+    def create_test_user(self,client,payload):
+        res = client.post("/users/",json=payload)
         data = json.loads(res.data)
         self.assertEqual(data,"User created successfully!")
         self.assertEqual(res.status_code,201)
@@ -61,7 +71,7 @@ class UserResourceTestCase(BaseCase):
 
     def test_list_users(self):
         with self.app as client:
-            self.create_test_user(client)
+            self.create_test_user(client,self.user1_creation_payload)
             token = self.login_user(client)
             token_valid = self.token_valid(token)
             res = client.get("/users/",headers={"Authorization":f"Bearer {token}"})
@@ -71,7 +81,7 @@ class UserResourceTestCase(BaseCase):
 
     def test_list_users_with_invalid_token(self):
         with self.app as client:
-            self.create_test_user(client)
+            self.create_test_user(client,self.user1_creation_payload)
             token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2MDg1Nzk3MDIsImV4cCI6MTYwODU4MDAwMiwic3ViIjoxfQ.Xb8ak1mNwFjzVzr4_4DTVocLi4JN1oIhZLpVOY2VMxE"
             token_valid = self.token_valid(token)
             res = client.get("/users/",headers={"Authorization":f"Bearer {token}"})
@@ -82,7 +92,7 @@ class UserResourceTestCase(BaseCase):
 
     def test_user_creation(self):
         with self.app as client:
-            self.create_test_user(client)
+            self.create_test_user(client,self.user1_creation_payload)
 
 
     def test_user_creation_with_invalid_payload(self):
@@ -95,7 +105,7 @@ class UserResourceTestCase(BaseCase):
 
     def test_user_creation_with_existing_username(self):
         with self.app as client:
-            self.create_test_user(client)
+            self.create_test_user(client,self.user1_creation_payload)
             res2 = client.post("/users/",json=self.username_user_payload)
             data = json.loads(res2.data)
             self.assertEqual(data,"Username already exists!")
@@ -104,7 +114,7 @@ class UserResourceTestCase(BaseCase):
 
     def test_user_creation_with_existing_email(self):
         with self.app as client:
-            self.create_test_user(client)
+            self.create_test_user(client,self.user1_creation_payload)
             res2 = client.post("/users/",json=self.email_user_payload)
             data = json.loads(res2.data)
             self.assertEqual(data,"Email already exists!")
@@ -115,7 +125,7 @@ class UserResourceTestCase(BaseCase):
     def test_get_user_by_valid_id(self):
         test_id = 1
         with self.app as client:
-            self.create_test_user(client)
+            self.create_test_user(client,self.user1_creation_payload)
             res2 = client.get(f"/user/{test_id}/")
             data = json.loads(res2.data)
             self.assertEqual(data.get("id"),test_id)
@@ -126,7 +136,7 @@ class UserResourceTestCase(BaseCase):
     def test_get_user_by_invalid_id(self):
         test_id = 100
         with self.app as client:
-            self.create_test_user(client)
+            self.create_test_user(client,self.user1_creation_payload)
             res2 = client.get(f"/user/{test_id}/")
             data = json.loads(res2.data)
             self.assertEqual(data.get("message"),f"User {test_id} does not exist!")
@@ -136,7 +146,7 @@ class UserResourceTestCase(BaseCase):
     def test_update_valid_user(self):
         test_id = 1
         with self.app as client:
-            self.create_test_user(client)
+            self.create_test_user(client,self.user1_creation_payload)
             res2 = client.put(f"/user/{test_id}/",json=self.update_payload)
             self.assertEqual(res2.status_code,204)
 
@@ -144,7 +154,7 @@ class UserResourceTestCase(BaseCase):
     def test_update_invalid_user(self):
         test_id = 100
         with self.app as client:
-            self.create_test_user(client)
+            self.create_test_user(client,self.user1_creation_payload)
             res2 = client.put(f"/user/{test_id}/",json=self.update_payload)
             self.assertEqual(res2.status_code,404)
 
@@ -152,7 +162,7 @@ class UserResourceTestCase(BaseCase):
     def test_delete_valid_user(self):
         test_id = 1
         with self.app as client:
-            self.create_test_user(client)
+            self.create_test_user(client,self.user1_creation_payload)
             res2 = client.delete(f"/user/{test_id}/")
             self.assertEqual(res2.status_code,204)
 
@@ -160,20 +170,20 @@ class UserResourceTestCase(BaseCase):
     def test_delete_invalid_user(self):
         test_id = 100
         with self.app as client:
-            self.create_test_user(client)
+            self.create_test_user(client,self.user1_creation_payload)
             res2 = client.delete(f"/user/{test_id}/")
             self.assertEqual(res2.status_code,404)
 
 
     def test_user_login_with_valid_credentials(self):
         with self.app as client:
-            self.create_test_user(client) 
+            self.create_test_user(client,self.user1_creation_payload) 
             self.login_user(client)
 
 
     def test_user_login_with_invalid_credentials(self):
         with self.app as client:
-            self.create_test_user(client) 
+            self.create_test_user(client,self.user1_creation_payload) 
             login_payload = {
                 "email":"harryndegwa@gmail.com",
                 "password":"testuser"
@@ -183,5 +193,10 @@ class UserResourceTestCase(BaseCase):
             self.assertIsInstance(data,str)
             self.assertEqual(data,"Wrong email or password!")
             self.assertEqual(res2.status_code,404)
+
+
+
+
+
 
             
