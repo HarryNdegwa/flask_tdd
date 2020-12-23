@@ -126,7 +126,8 @@ class UserResourceTestCase(BaseCase):
         test_id = 1
         with self.app as client:
             self.create_test_user(client,self.user1_creation_payload)
-            res2 = client.get(f"/user/{test_id}/")
+            token = self.login_user(client)
+            res2 = client.get(f"/user/{test_id}/",headers={"Authorization":f"Bearer {token}"})
             data = json.loads(res2.data)
             self.assertEqual(data.get("id"),test_id)
             self.assertIn("username",data.keys())
