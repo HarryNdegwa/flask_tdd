@@ -117,11 +117,14 @@ def is_authenticated(request):
         token_payload = User.decode_user_token(token,config.get("JWT_SECRET"))
         try:
             subject = token_payload["sub"]
-            return True
+            user = User.query.filter_by(id=int(subject)).first()
+            if user:
+                return True,user
+            return False,{}
         except Exception as e:
-            return False
+            return False,{}
     else:
-        return False
+        return False,{}
 
 
 
