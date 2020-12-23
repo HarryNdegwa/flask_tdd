@@ -150,7 +150,7 @@ class UserList(Resource):
     def get(self):
         is_auth,user = is_authenticated(request)
         if is_auth:
-            users = User.query.all()
+            users = User.query.filter(User.id != user.id)
             return users_schema.dump(users),200
         return "",401
 
