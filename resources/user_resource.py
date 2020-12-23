@@ -242,16 +242,16 @@ class UsersAssociation(Resource):
         args = self.post_parser.parse_args()
         is_auth,user = is_authenticated(request)
         if is_auth:
-            ids = [user.id,int(args.get("id"))]
+            ids = [user.id,args.get("id")]
             users = User.query.filter(User.id.in_(ids)).all()
             following=None
             followed=None
             for _user in users:
                 if _user.id == user.id:
                     if _user.following is None:
-                        _user.following = [int(args.get("id"))]
+                        _user.following = [args.get("id")]
                     else:
-                        _user.following.append(int(args.get("id")))
+                        _user.following.append(args.get("id"))
                     following = _user.following
                 else:
                     if _user.followers is None:

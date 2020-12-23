@@ -194,25 +194,33 @@ class UserResourceTestCase(BaseCase):
             self.assertEqual(data,"Wrong email or password!")
             self.assertEqual(res2.status_code,404)
 
+    
+    def create_user_and_follow(self,client):
+        # create user doing the following
+        self.create_test_user(client,self.user1_creation_payload) # id = 1
+        # login this user
+        token = self.login_user(client)
+        # create another user to be followed
+        self.create_test_user(client,self.user2_creation_payload) # id = 2
+        # follow this user
+        res = client.post("/follow/",json={"id":2},headers={"Authorization":f"Bearer {token}"})
+        data = json.loads(res.data)
+        user1_following = data[0]
+        user2_followed = data[1]
+        self.assertIsInstance(user1_following,list)
+        self.assertIsInstance(user2_followed,list)
+        self.assertIn(2,user1_following)
+        self.assertIn(1,user2_followed)
+        self.assertEqual(res.status_code,201)
+
 
     def test_user_follow(self):
         with self.app as client:
-            # create user doing the following
-            self.create_test_user(client,self.user1_creation_payload) # id = 1
-            # login this user
-            token = self.login_user(client)
-            # create another user to be followed
-            self.create_test_user(client,self.user2_creation_payload) # id = 2
-            # follow this user
-            res = client.post("/follow/",json={"id":2},headers={"Authorization":f"Bearer {token}"})
-            data = json.loads(res.data)
-            user1_following = data[0]
-            user2_followed = data[1]
-            self.assertIsInstance(user1_following,list)
-            self.assertIsInstance(user2_followed,list)
-            self.assertIn(2,user1_following)
-            self.assertIn(1,user2_followed)
-            self.assertEqual(res.status_code,201)
+            self.create_user_and_follow(client)
+
+
+
+
 
 
             
