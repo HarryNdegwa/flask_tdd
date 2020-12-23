@@ -148,7 +148,8 @@ class UserList(Resource):
         return user
 
     def get(self):
-        if is_authenticated(request):
+        is_auth,user = is_authenticated(request)
+        if is_auth:
             users = User.query.all()
             return users_schema.dump(users),200
         return "",401
