@@ -196,8 +196,14 @@ class UserDetails(Resource):
 
 
     def get(self,id):
-        user = self.abort_if_user_does_not_exist(id)
-        return user_schema.dump(user.first()),200
+        is_auth,user= is_authenticated(request)
+        if is_auth:
+            if id != user.id:
+                user = self.abort_if_user_does_not_exist(id).first()
+            else:
+                pass
+            return user_schema.dump(user),200
+        return "",401
 
 
     def update_data(self,user,raw_data):
