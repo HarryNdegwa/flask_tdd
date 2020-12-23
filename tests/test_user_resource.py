@@ -212,6 +212,7 @@ class UserResourceTestCase(BaseCase):
         self.assertIn(2,user1_following)
         self.assertIn(1,user2_followed)
         self.assertEqual(res.status_code,201)
+        return token
 
 
     def test_user_follow(self):
@@ -220,7 +221,19 @@ class UserResourceTestCase(BaseCase):
 
 
 
-
+    def test_user_unfollow(self):
+        with self.app as client:
+            token = self.create_user_and_follow(client)
+            # unfollow
+            res = client.delete("/unfollow/id/",headers={"Authorization":f"Bearer {token}"})
+            data = json.loads(res.data)
+            user1_following = data[0]
+            user2_followed = data[1]
+            self.assertIsInstance(user1_following,list)
+            self.assertIsInstance(user2_followed,list)
+            self.assertNotIn(2,user1_following)
+            self.assertNotIn(1,user2_followed)
+            self.assertEqual(res.status_code,200)
 
 
             
