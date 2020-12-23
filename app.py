@@ -46,7 +46,7 @@ def create_endpoints():
     api.add_resource(UserDetails,"/user/<int:id>/")
     api.add_resource(PostList,"/posts/")
     api.add_resource(UserLogin,"/login/")
-    api.add_resource(UsersAssociation,"/follow/")
+    api.add_resource(UsersAssociation,"/follow/<int:id>/")
 
 create_endpoints()
 
