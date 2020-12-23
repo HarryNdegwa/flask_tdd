@@ -1,8 +1,8 @@
 from datetime import datetime
 
-from flask_restful import Resource,reqparse,fields,marshal_with
+from flask_restful import Resource,reqparse
 
-from app import db
+from app import db,ma
 
 
 class Post(db.Model):
@@ -29,32 +29,32 @@ class Post(db.Model):
         return self.owner_id
 
 
+class PostSchema(ma.Schema):
+
+    class Meta:
+        model = Post
+        fields = ["id","owner_id","content","comments","created_at"]
+
+
+post_schema = PostSchema()
+posts_schema = PostSchema(many=True)
 
 
 
 class PostList(Resource):
-
-    resource_fields = {
-        "id":fields.Integer,
-        "content":fields.String
-    }
-
 
     def __init__(self):
         self.post_parser = reqparse.RequestParser()
         self.post_parser.add_argument("owner_id",type=int)
         self.post_parser.add_argument("content",type=str,required=True,help="Post content required!")
 
-    @marshal_with(resource_fields)
     def get(self):
-        return Post.query.all(),200
+        return posts_schema.dump(Post.query.all()),200
 
 
-    @marshal_with(resource_fields)
     def post(self):
         req_data = self.post_parser.parse_args()
         post = Post(owner_id=req_data.get("owner_id"),content=req_data.get("content"))
         db.session.add(post)
         db.session.commit()
-        post = Post.query.filter_by(id=2).first()
-        return post,201
+        return "",201

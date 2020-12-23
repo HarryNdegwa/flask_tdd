@@ -34,6 +34,6 @@ class PostResourceTestCase(BaseCase):
             }
             res2 = client.post("/posts/",json=post_data)
             data = json.loads(res2.data)
-            self.assertIn("id",data.keys())
+            self.assertIsInstance(data,str)
             self.assertEqual(res2.status_code,201)
 
