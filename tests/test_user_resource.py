@@ -167,16 +167,18 @@ class UserResourceTestCase(BaseCase):
         test_id = 1
         with self.app as client:
             self.create_test_user(client,self.user1_creation_payload)
-            res2 = client.delete(f"/user/{test_id}/")
-            self.assertEqual(res2.status_code,204)
+            token = self.login_user(client)
+            res = client.delete(f"/user/{test_id}/",headers={"Authorization":f"Bearer {token}"})
+            self.assertEqual(res.status_code,204)
 
 
     def test_delete_invalid_user(self):
         test_id = 100
         with self.app as client:
             self.create_test_user(client,self.user1_creation_payload)
-            res2 = client.delete(f"/user/{test_id}/")
-            self.assertEqual(res2.status_code,404)
+            token = self.login_user(client)
+            res = client.delete(f"/user/{test_id}/",headers={"Authorization":f"Bearer {token}"})
+            self.assertEqual(res.status_code,404)
 
 
     def test_user_login_with_valid_credentials(self):

@@ -236,6 +236,8 @@ class UserDetails(Resource):
     def delete(self,id):
         is_auth,user = is_authenticated(request)
         if is_auth:
+            if id != user.id:
+                return "",404
             db.session.delete(user)
             db.session.commit()
             return {},204
