@@ -203,7 +203,7 @@ class UserResourceTestCase(BaseCase):
         # create another user to be followed
         self.create_test_user(client,self.user2_creation_payload) # id = 2
         # follow this user
-        res = client.post("/follow/2/",headers={"Authorization":f"Bearer {token}"})
+        res = client.post("/follow/",json={"id":2},headers={"Authorization":f"Bearer {token}"})
         data = json.loads(res.data)
         user1_following = data[0]
         user2_followed = data[1]
@@ -225,7 +225,7 @@ class UserResourceTestCase(BaseCase):
         with self.app as client:
             token = self.create_user_and_follow(client)
             # unfollow
-            res = client.delete("/follow/2/",headers={"Authorization":f"Bearer {token}"})
+            res = client.delete("/follow/",json={"id":2},headers={"Authorization":f"Bearer {token}"})
             data = json.loads(res.data)
             user1_following = data[0]
             user2_followed = data[1]

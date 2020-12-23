@@ -103,7 +103,7 @@ class UserSchema(ma.Schema):
 
     class Meta:
         model = User
-        fields = ["id","username","email"]
+        fields = ["id","username","email","followers","following"]
 
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
@@ -235,28 +235,29 @@ class UserDetails(Resource):
 class UsersAssociation(Resource):
 
     def __init__(self):
-        self.post_parser = reqparse.RequestParser()
-        self.post_parser.add_argument("id",type=int,required=True,help="To follow is required!")
+        self.req_parser = reqparse.RequestParser()
+        self.req_parser.add_argument("id",type=int,required=True,help="To follow is required!")
 
-    def post(self,id): # follow
+    def post(self): # follow
+        args = self.req_parser.parse_args()
         is_auth,user = is_authenticated(request)
         if is_auth:
-            ids = [user.id,id]
+            ids = [user.id,args.get("id")]
             users = User.query.filter(User.id.in_(ids)).all()
             following=None
             followed=None
             for _user in users:
                 if _user.id == user.id:
                     if _user.following is None:
-                        _user.following = [id]
+                        _user.following = [args.get("id")]
                     else:
-                        _user.following.append(id)
+                        _user.following = _user.following + [args.get("id")]
                     following = _user.following
                 else:
                     if _user.followers is None:
                         _user.followers = [user.id]
                     else:
-                        _user.followers.append(user.id)
+                        _user.followers = _user.followers + [user.id]
                     followed = _user.followers
             db.session.commit()
 
@@ -266,21 +267,30 @@ class UsersAssociation(Resource):
         return "",401
 
     
-    def delete(self,id): #unfollow
+    def delete(self): #unfollow
+        args = self.req_parser.parse_args()
         is_auth,user = is_authenticated(request)
         if is_auth:
-            ids = [user.id,id]
+            ids = [user.id,args.get("id")]
             users = User.query.filter(User.id.in_(ids)).all()
             following=None
             followed=None
             for _user in users:
                 if _user.id == user.id:
-                    _user.following.remove(id)
+                    following_copy = user.following.copy()
+                    following_copy.remove(int(args.get("id")))
+                    _user.following = following_copy
                     following = _user.following
                 else:
-                    _user.followers.remove(user.id)
+                    followers_copy = _user.followers.copy()
+                    followers_copy.remove(user.id)
+                    _user.followers = followers_copy
                     followed = _user.followers
+            db.session.commit()
+
             return [following,followed],200
+
+
         return "",401
 
 
