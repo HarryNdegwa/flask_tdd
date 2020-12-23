@@ -234,10 +234,12 @@ class UserDetails(Resource):
 
 
     def delete(self,id):
-        user = self.abort_if_user_does_not_exist(id)
-        db.session.delete(user.first())
-        db.session.commit()
-        return {},204
+        is_auth,user = is_authenticated(request)
+        if is_auth:
+            db.session.delete(user)
+            db.session.commit()
+            return {},204
+        return "",401
 
 
 
