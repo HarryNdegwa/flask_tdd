@@ -39,13 +39,14 @@ migrate = Migrate(app,db)
 
 def create_endpoints():
 
-    from resources.user_resource import UserList,UserDetails,UserLogin
+    from resources.user_resource import UserList,UserDetails,UserLogin,UsersAssociation
     from resources.post_resource import PostList
 
     api.add_resource(UserList,"/users/")
     api.add_resource(UserDetails,"/user/<int:id>/")
     api.add_resource(PostList,"/posts/")
     api.add_resource(UserLogin,"/login/")
+    api.add_resource(UsersAssociation,"/follow/")
 
 create_endpoints()
 

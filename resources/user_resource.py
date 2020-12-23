@@ -232,6 +232,43 @@ class UserDetails(Resource):
 
 
 
+class UsersAssociation(Resource):
+
+    def __init__(self):
+        self.post_parser = reqparse.RequestParser()
+        self.post_parser.add_argument("id",type=int,required=True,help="To follow is required!")
+
+    def post(self): # follow
+        args = self.post_parser.parse_args()
+        is_auth,user = is_authenticated(request)
+        if is_auth:
+            ids = [user.id,int(args.get("id"))]
+            users = User.query.filter(User.id.in_(ids)).all()
+            following=None
+            followed=None
+            for _user in users:
+                if _user.id == user.id:
+                    if _user.following is None:
+                        _user.following = [int(args.get("id"))]
+                    else:
+                        _user.following.append(int(args.get("id")))
+                    following = _user.following
+                else:
+                    if _user.followers is None:
+                        _user.followers = [user.id]
+                    else:
+                        _user.followers.append(user.id)
+                    followed = _user.followers
+            db.session.commit()
+
+            return [following,followed],201
+
+            
+        return "",401
+
+
+
+
 class UserLogin(Resource):
 
     def __init__(self):
