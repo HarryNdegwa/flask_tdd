@@ -55,10 +55,10 @@ class UserResourceTestCase(BaseCase):
             "email":"harryndegwa4@gmail.com",
             "password":"testuser"
         }
-        res2 = client.post("/login/",json=login_payload)
-        data = json.loads(res2.data)
+        res = client.post("/login/",json=login_payload)
+        data = json.loads(res.data)
         self.assertIn("token",data.keys())
-        self.assertEqual(res2.status_code,200)
+        self.assertEqual(res.status_code,200)
         return data.get("token")
 
 
@@ -127,21 +127,22 @@ class UserResourceTestCase(BaseCase):
         with self.app as client:
             self.create_test_user(client,self.user1_creation_payload)
             token = self.login_user(client)
-            res2 = client.get(f"/user/{test_id}/",headers={"Authorization":f"Bearer {token}"})
-            data = json.loads(res2.data)
+            res = client.get(f"/user/{test_id}/",headers={"Authorization":f"Bearer {token}"})
+            data = json.loads(res.data)
             self.assertEqual(data.get("id"),test_id)
             self.assertIn("username",data.keys())
-            self.assertEqual(res2.status_code,200)
+            self.assertEqual(res.status_code,200)
 
 
     def test_get_user_by_invalid_id(self):
         test_id = 100
         with self.app as client:
             self.create_test_user(client,self.user1_creation_payload)
-            res2 = client.get(f"/user/{test_id}/")
-            data = json.loads(res2.data)
+            token = self.login_user(client)
+            res = client.get(f"/user/{test_id}/",headers={"Authorization":f"Bearer {token}"})
+            data = json.loads(res.data)
             self.assertEqual(data.get("message"),f"User {test_id} does not exist!")
-            self.assertEqual(res2.status_code,404)
+            self.assertEqual(res.status_code,404)
 
 
     def test_update_valid_user(self):
