@@ -222,12 +222,14 @@ class UserDetails(Resource):
 
 
     def put(self,id):
-        user = self.abort_if_user_does_not_exist(id)
-        request_data = self.put_parser.parse_args()    
-        data = self.update_data(user,request_data)
-        user.update(data)
-        db.session.commit()
-        return {},204
+        is_auth,user = is_authenticated(request)
+        if is_auth:
+            request_data = self.put_parser.parse_args()    
+            data = self.update_data(user,request_data)
+            user.update(data)
+            db.session.commit()
+            return {},204
+        return "",401
 
 
     def delete(self,id):
