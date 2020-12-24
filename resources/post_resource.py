@@ -8,10 +8,10 @@ from app import db,ma,config
 def is_authenticated(request):
     auth_header = request.headers.get("Authorization")
     if auth_header:
+        from resources.user_resource import User
         _,token = auth_header.split(" ")
         token_payload = User.decode_user_token(token,config.get("JWT_SECRET"))
         try:
-            from resources.user_resource import User
             subject = token_payload["sub"]
             user = User.query.filter_by(id=int(subject)).first()
             if user:
@@ -64,10 +64,18 @@ class PostList(Resource):
     def __init__(self):
         self.post_parser = reqparse.RequestParser()
         self.post_parser.add_argument("content",type=str,required=True,help="Post content required!")
+        self.get_parser = reqparse.RequestParser()
+        self.get_parser.add_argument("id",type=int,required=True,help="User id required!")
 
     def get(self):
+        args = self.get_parser.parse_args()
         is_auth,user = is_authenticated(request)
         if is_auth:
+            id_ = args.get("id")
+            if id_ == user.id:
+                posts = Post.query.filter_by(id=user.id).all()
+            else:
+                posts = Post.query.filter_by(id=id_).all()
             return posts_schema.dump(Post.query.all()),200
         return "",401
 
