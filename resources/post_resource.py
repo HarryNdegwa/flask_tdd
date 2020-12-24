@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from flask import request
-from flask_restful import Resource,reqparse
+from flask_restful import Resource,reqparse,abort
 
 from app import db,ma,config
 
@@ -89,4 +89,24 @@ class PostList(Resource):
             db.session.add(post)
             db.session.commit()
             return "",201
+        return "",401
+
+
+class PostDetails(Resource):
+
+    def abort_if_post_does_not_exist(self,id):
+        post = self.get_post(id)
+        if not post:
+            return abort(404,message=f"Post {id} not found!") 
+        return post
+
+
+    def get_post(self,id):
+        return Post.query.filter_by(id=id).first()
+
+    def get(self,id):
+        is_auth,user = is_authenticated(request)
+        if is_auth:
+            post = self.abort_if_post_does_not_exist(id)
+            return post_schema.dump(post),200
         return "",401
