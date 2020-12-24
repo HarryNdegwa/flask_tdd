@@ -110,3 +110,15 @@ class PostDetails(Resource):
             post = self.abort_if_post_does_not_exist(id)
             return post_schema.dump(post),200
         return "",401
+
+
+    def delete(self,id):
+        is_auth,user = is_authenticated(request)
+        if is_auth:
+            post = self.abort_if_post_does_not_exist(id)
+            if user.id != post.owner_id:
+                return "",400
+            db.session.delete(post)
+            db.session.commit()
+            return "",204
+        return "",401

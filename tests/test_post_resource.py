@@ -106,7 +106,6 @@ class PostResourceTestCase(BaseCase):
             token = self.login_user(client)
             self.create_test_post(client,token)
             res = client.delete("/post/1/",headers={"Authorization":f"Bearer {token}"})
-            data = json.loads(res.data)
             self.assertEqual(res.status_code,204)
 
     
