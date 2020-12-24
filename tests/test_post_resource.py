@@ -100,3 +100,26 @@ class PostResourceTestCase(BaseCase):
             self.assertEqual(res.status_code,404)
 
 
+    def test_delete_post(self):
+        with self.app as client:
+            self.create_test_user(client,self.user1_creation_payload)
+            token = self.login_user(client)
+            self.create_test_post(client,token)
+            res = client.delete("/post/1/",headers={"Authorization":f"Bearer {token}"})
+            data = json.loads(res.data)
+            self.assertEqual(res.status_code,204)
+
+    
+    def test_delete_invalid_post(self):
+        with self.app as client:
+            self.create_test_user(client,self.user1_creation_payload)
+            token = self.login_user(client)
+            self.create_test_post(client,token)
+            res = client.delete("/post/100/",headers={"Authorization":f"Bearer {token}"})
+            data = json.loads(res.data)
+            self.assertIsInstance(data,dict)
+            self.assertIn("message",data.keys())
+            self.assertEqual(data.get("message"),"Post 100 not found!")
+            self.assertEqual(res.status_code,404)
+
+
