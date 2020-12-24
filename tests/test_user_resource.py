@@ -242,4 +242,21 @@ class UserResourceTestCase(BaseCase):
             self.assertEqual(res.status_code,200)
 
 
+    def test_user_get_followers(self):
+        with self.app as client:
+            token = self.create_user_and_follow(client)
+            res = client.get("/associations/",json={"type":"followers"},headers={"Authorization":f"Bearer {token}"})
+            data = json.loads(res.data)
+            self.assertIsInstance(data,list)
+            self.assertEqual(res.status_code,200)
+
+
+    def test_user_get_following(self):
+        with self.app as client:
+            token = self.create_user_and_follow(client)
+            res = client.get("/associations/",json={"type":"following"},headers={"Authorization":f"Bearer {token}"})
+            data = json.loads(res.data)
+            self.assertIsInstance(data,list)
+            self.assertEqual(res.status_code,200)
+
             
