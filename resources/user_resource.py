@@ -250,6 +250,29 @@ class UsersAssociation(Resource):
     def __init__(self):
         self.req_parser = reqparse.RequestParser()
         self.req_parser.add_argument("id",type=int,required=True,help="To follow is required!")
+        self.get_req_parser = reqparse.RequestParser()
+        self.get_req_parser.add_argument("type",type=str,required=True,help="Type required!")
+        self.associations_type = ["followers","following"]
+
+
+    def get(self):
+        args = self.get_req_parser.parse_args()
+        is_auth,user = is_authenticated(request)
+        if is_auth:
+            type_ = args.get("type")
+            if type_ not in self.associations_type:
+                return "",400
+            if type_ == "following":
+                user_following = user.following
+                if user_following is None:
+                    user_following = []
+                return user_following,200
+            elif type_ == "followers":
+                user_followers = user.followers
+                if user_followers is None:
+                    user_followers = []
+                return user_followers,200 
+        return "",401
 
     def post(self): # follow
         args = self.req_parser.parse_args()
