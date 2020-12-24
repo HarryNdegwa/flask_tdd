@@ -36,6 +36,17 @@ class PostResourceTestCase(BaseCase):
         self.assertEqual(res.status_code,200)
         return data.get("token")
 
+    def create_test_post(self,client,token):
+        user_id = 1
+        post_data = {
+            "owner_id":user_id,
+            "content":"Test post"
+        }
+        res = client.post("/posts/",json=post_data,headers={"Authorization":f"Bearer {token}"})
+        data = json.loads(res.data)
+        self.assertIsInstance(data,str)
+        self.assertEqual(res.status_code,201)
+
 
     def test_get_my_posts(self):
         with self.app as client:
@@ -58,21 +69,21 @@ class PostResourceTestCase(BaseCase):
             self.assertEqual(res.status_code,200)
 
     
-    
-
-        
-
     def test_post_creation(self):
         with self.app as client:
             self.create_test_user(client,self.user1_creation_payload)
             token = self.login_user(client)
-            user_id = 1
-            post_data = {
-                "owner_id":user_id,
-                "content":"Test post"
-            }
-            res = client.post("/posts/",json=post_data,headers={"Authorization":f"Bearer {token}"})
+            self.create_test_post(client,token)
+
+    
+    def test_get_post(self):
+        with self.app as client:
+            self.create_test_user(client,self.user1_creation_payload)
+            token = self.login_user(client)
+            self.create_test_post(client,token)
+            res = client.get("/post/1/",headers={"Authorization":f"Bearer {token}"})
             data = json.loads(res.data)
-            self.assertIsInstance(data,str)
-            self.assertEqual(res.status_code,201)
+            self.assertIn("id",data.keys())
+            self.assertEqual(res.status_code,200)
+
 
