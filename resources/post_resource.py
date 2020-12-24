@@ -72,11 +72,12 @@ class PostList(Resource):
         is_auth,user = is_authenticated(request)
         if is_auth:
             id_ = args.get("id")
+            posts=None
             if id_ == user.id:
-                posts = Post.query.filter_by(id=user.id).all()
+                posts = Post.query.filter(Post.owner_id==user.id)
             else:
-                posts = Post.query.filter_by(id=id_).all()
-            return posts_schema.dump(Post.query.all()),200
+                posts = Post.query.filter(Post.owner_id==id_)
+            return posts_schema.dump(posts),200
         return "",401
 
 
