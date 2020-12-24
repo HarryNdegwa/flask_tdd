@@ -1,8 +1,26 @@
 from datetime import datetime
 
+from flask import request
 from flask_restful import Resource,reqparse
 
-from app import db,ma
+from app import db,ma,config
+
+def is_authenticated(request):
+    auth_header = request.headers.get("Authorization")
+    if auth_header:
+        _,token = auth_header.split(" ")
+        token_payload = User.decode_user_token(token,config.get("JWT_SECRET"))
+        try:
+            from resources.user_resource import User
+            subject = token_payload["sub"]
+            user = User.query.filter_by(id=int(subject)).first()
+            if user:
+                return True,user
+            return False,{}
+        except Exception as e:
+            return False,{}
+    else:
+        return False,{}
 
 
 class Post(db.Model):
@@ -45,16 +63,21 @@ class PostList(Resource):
 
     def __init__(self):
         self.post_parser = reqparse.RequestParser()
-        self.post_parser.add_argument("owner_id",type=int)
         self.post_parser.add_argument("content",type=str,required=True,help="Post content required!")
 
     def get(self):
-        return posts_schema.dump(Post.query.all()),200
+        is_auth,user = is_authenticated(request)
+        if is_auth:
+            return posts_schema.dump(Post.query.all()),200
+        return "",401
 
 
     def post(self):
-        req_data = self.post_parser.parse_args()
-        post = Post(owner_id=req_data.get("owner_id"),content=req_data.get("content"))
-        db.session.add(post)
-        db.session.commit()
-        return "",201
+        is_auth,user = is_authenticated(request)
+        if is_auth:
+            req_data = self.post_parser.parse_args()
+            post = Post(owner_id=user.id,content=req_data.get("content"))
+            db.session.add(post)
+            db.session.commit()
+            return "",201
+        return "",401
