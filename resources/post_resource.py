@@ -103,6 +103,7 @@ class PostDetails(Resource):
 
     def get_post(self,id):
         return Post.query.filter_by(id=id).first()
+        
 
     def get(self,id):
         is_auth,user = is_authenticated(request)
